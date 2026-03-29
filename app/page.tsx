@@ -98,6 +98,7 @@ export default function Home() {
         <Suspense fallback={<LoadingScreen />}>
           <Scene
             currentView={currentView}
+            collections={collections}
             selectedCollection={selectedCollection}
             looks={looks}
             onCollectionSelect={handleCollectionSelect}
