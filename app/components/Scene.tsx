@@ -29,7 +29,7 @@ export default function Scene({
 }: SceneProps) {
   return (
     <Canvas
-      camera={{ position: [0, 1.6, 9], fov: 50 }}
+      camera={{ position: [0, 1.6, 7], fov: 50 }}
       className="w-full h-full"
       dpr={[1, 1.5]}
       shadows
@@ -41,14 +41,20 @@ export default function Scene({
         <pointLight position={[-5, 4, -5]} intensity={0.4} />
         <pointLight position={[5, 4, 5]} intensity={0.3} />
 
+        {/* Lobby: walls at z=-8 / x=±9. Max 7 keeps camera inside.
+            Collection: walls at z=-6 / x=±6. Max 5 keeps camera inside.
+            Azimuth ±95° prevents orbiting behind the door wall. */}
         <OrbitControls
+          key={currentView}
           target={[0, 1.6, 0]}
           enableZoom={true}
           enablePan={false}
-          minDistance={3}
-          maxDistance={12}
+          minDistance={2}
+          maxDistance={currentView === 'lobby' ? 7 : 5}
           minPolarAngle={Math.PI / 8}
           maxPolarAngle={Math.PI / 2.1}
+          minAzimuthAngle={-Math.PI * 0.53}
+          maxAzimuthAngle={Math.PI * 0.53}
           autoRotate={false}
         />
 
