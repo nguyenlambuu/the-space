@@ -7,6 +7,18 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
+/** Converts a storage_url that may be a relative path into a full HTTPS URL.
+ *  e.g. "/looks_example/foo.jpg" →
+ *  "https://xxx.supabase.co/storage/v1/object/public/looks_example/foo.jpg"
+ */
+function resolveStorageUrl(storageUrl: string): string {
+  if (!storageUrl) return ''
+  if (storageUrl.startsWith('http')) return storageUrl
+  const base = supabaseUrl.replace(/\/$/, '')
+  const path = storageUrl.startsWith('/') ? storageUrl : `/${storageUrl}`
+  return `${base}/storage/v1/object/public${path}`
+}
+
 function mapLook(l: Record<string, unknown>): Look {
   return {
     id: l.id as string,
@@ -14,7 +26,7 @@ function mapLook(l: Record<string, unknown>): Look {
     name: l.name as string,
     materials: Array.isArray(l.tags) && l.tags.length > 0 ? (l.tags as string[]).join(', ') : 'Details forthcoming',
     inspiration: (l.description as string) || '',
-    image_url: Array.isArray(l.photos) && l.photos.length > 0 ? (l.photos as Array<{ storage_url: string }>)[0].storage_url : '',
+    image_url: Array.isArray(l.photos) && l.photos.length > 0 ? resolveStorageUrl((l.photos as Array<{ storage_url: string }>)[0].storage_url) : '',
     order: l.sort_order as number,
   }
 }
@@ -50,9 +62,10 @@ export async function getCollections(): Promise<Collection[]> {
   const coverMap = new Map<string, string>()
   for (const row of (coverData || [])) {
     if (!coverMap.has(row.collection_id)) {
-      const url = Array.isArray(row.photos) && row.photos.length > 0
+      const raw = Array.isArray(row.photos) && row.photos.length > 0
         ? (row.photos[0].storage_url as string)
         : undefined
+      const url = raw ? resolveStorageUrl(raw) : undefined
       if (url) coverMap.set(row.collection_id, url)
     }
   }
