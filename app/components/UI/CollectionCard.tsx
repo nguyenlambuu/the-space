@@ -22,7 +22,7 @@ export default function CollectionCard({ collection, index, lookCount }: Collect
         className="block no-underline"
         onContextMenu={(e) => e.preventDefault()}
       >
-        <div className="bg-surface-container-high mb-8 aspect-[4/5] relative overflow-hidden">
+        <div className="bg-surface-container-high mb-8 aspect-[16/9] relative overflow-hidden">
           {collection.cover_image ? (
             <ProtectedImage
               src={collection.cover_image}

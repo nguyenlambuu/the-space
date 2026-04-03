@@ -38,11 +38,11 @@ function mapLook(l: Record<string, unknown>): Look {
   }
 }
 
-// Fetch all published collections (with cover image from first look)
+// Fetch all published collections (with cover image from collection field or first look)
 export async function getCollections(): Promise<Collection[]> {
   const { data, error } = await supabase
     .from('collections')
-    .select('id, name, description, slug, sort_order')
+    .select('id, name, description, slug, sort_order, cover_photo')
     .eq('status', 'published')
     .order('sort_order', { ascending: true })
 
@@ -53,41 +53,48 @@ export async function getCollections(): Promise<Collection[]> {
     description: c.description || '',
     slug: c.slug,
     order: c.sort_order,
+    cover_image: c.cover_photo
+      ? resolveStorageUrl((c.cover_photo as { storage_url: string }).storage_url)
+      : undefined,
   }))
 
   if (collections.length === 0) return collections
 
-  // Fetch one look per collection to use as cover image
-  const { data: coverData } = await supabase
-    .from('looks')
-    .select('collection_id, photos, sort_order')
-    .in('collection_id', collections.map((c) => c.id))
-    .eq('status', 'published')
-    .order('sort_order', { ascending: true })
+  // For collections without an explicit cover_image, fall back to first look photo
+  const needsCover = collections.filter((c) => !c.cover_image)
+  if (needsCover.length > 0) {
+    const { data: coverData } = await supabase
+      .from('looks')
+      .select('collection_id, photos, sort_order')
+      .in('collection_id', needsCover.map((c) => c.id))
+      .eq('status', 'published')
+      .order('sort_order', { ascending: true })
 
-  // Map collection_id -> first available photo URL
-  const coverMap = new Map<string, string>()
-  for (const row of (coverData || [])) {
-    if (!coverMap.has(row.collection_id)) {
-      const raw = Array.isArray(row.photos) && row.photos.length > 0
-        ? (row.photos[0].storage_url as string)
-        : undefined
-      const url = raw ? resolveStorageUrl(raw) : undefined
-      if (url) coverMap.set(row.collection_id, url)
+    const coverMap = new Map<string, string>()
+    for (const row of (coverData || [])) {
+      if (!coverMap.has(row.collection_id)) {
+        const raw = Array.isArray(row.photos) && row.photos.length > 0
+          ? (row.photos[0].storage_url as string)
+          : undefined
+        const url = raw ? resolveStorageUrl(raw) : undefined
+        if (url) coverMap.set(row.collection_id, url)
+      }
     }
+
+    return collections.map((c) => ({
+      ...c,
+      cover_image: c.cover_image || coverMap.get(c.id),
+    }))
   }
 
-  return collections.map((c) => ({
-    ...c,
-    cover_image: coverMap.get(c.id),
-  }))
+  return collections
 }
 
 // Fetch collection by slug
 export async function getCollectionBySlug(slug: string): Promise<Collection | null> {
   const { data, error } = await supabase
     .from('collections')
-    .select('id, name, description, slug, sort_order')
+    .select('id, name, description, slug, sort_order, cover_photo')
     .eq('slug', slug)
     .eq('status', 'published')
     .single()
@@ -103,6 +110,9 @@ export async function getCollectionBySlug(slug: string): Promise<Collection | nu
     description: data.description || '',
     slug: data.slug,
     order: data.sort_order,
+    cover_image: data.cover_photo
+      ? resolveStorageUrl((data.cover_photo as { storage_url: string }).storage_url)
+      : undefined,
   }
 }
 

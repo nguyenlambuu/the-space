@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import TopAppBar from '../components/UI/TopAppBar'
 import BottomNav from '../components/UI/BottomNav'
 import { getCollections } from '../lib/supabase'
@@ -30,19 +31,36 @@ export default async function SeasonsPage() {
                 href={`/seasons/${collection.slug}`}
                 className="group flex items-start justify-between py-8 border-t border-outline-variant/15 no-underline hover:bg-surface-container-low -mx-6 px-6 transition-colors duration-200"
               >
-                <div className="flex items-baseline gap-6">
-                  <span className="text-[0.6875rem] uppercase tracking-label text-on-surface-variant/40 shrink-0 w-8">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <div className="space-y-1">
-                    <h2 className="text-xl font-bold tracking-tight text-inverse-surface group-hover:text-secondary transition-colors duration-200">
-                      {collection.name}
-                    </h2>
-                    {collection.description && (
-                      <p className="text-sm leading-relaxed text-on-surface-variant max-w-sm line-clamp-2">
-                        {collection.description}
-                      </p>
+                <div className="flex items-center gap-5">
+                  {/* Cover thumbnail */}
+                  <div className="shrink-0 w-16 h-20 bg-surface-container-high overflow-hidden">
+                    {collection.cover_image ? (
+                      <Image
+                        src={collection.cover_image}
+                        alt={collection.name}
+                        width={64}
+                        height={80}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full" />
                     )}
+                  </div>
+
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-[0.6875rem] uppercase tracking-label text-on-surface-variant/40 shrink-0 w-8">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <div className="space-y-1">
+                      <h2 className="text-xl font-bold tracking-tight text-inverse-surface group-hover:text-secondary transition-colors duration-200">
+                        {collection.name}
+                      </h2>
+                      {collection.description && (
+                        <p className="text-sm leading-relaxed text-on-surface-variant max-w-sm line-clamp-2">
+                          {collection.description}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <span className="text-secondary/30 group-hover:text-secondary transition-colors duration-200 shrink-0 ml-4 mt-1">
