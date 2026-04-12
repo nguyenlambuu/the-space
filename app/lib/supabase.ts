@@ -157,6 +157,11 @@ export async function getAllLooks(
   }
 }
 
+// Fetch owner profile (placeholder — no DB table yet)
+export async function getOwnerProfile(): Promise<null> {
+  return null
+}
+
 // Fetch single look
 export async function getLook(lookId: string): Promise<Look | null> {
   const { data, error } = await supabase
