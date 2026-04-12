@@ -1,4 +1,12 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
+
+export const metadata: Metadata = {
+  title: 'Trinh Chau — The Space',
+  description: 'NTK Trinh Chau — thời trang đương đại lấy cảm hứng từ di sản Việt Nam. Browse the seasonal collections of fashion designer Trinh Chau.',
+  alternates: { canonical: 'https://trinhchau.com' },
+}
 import TopAppBar from './components/UI/TopAppBar'
 import BottomNav from './components/UI/BottomNav'
 import CollectionCard from './components/UI/CollectionCard'
@@ -58,12 +66,13 @@ export default async function LobbyPage() {
 
         {/* Footer */}
         <footer className="mt-32 mb-4 text-center border-t border-outline-variant pt-10">
-          <p className="font-mono text-[0.6875rem] uppercase tracking-label text-on-surface mb-1">
-            The Space
-          </p>
-          <p className="font-mono text-[0.6rem] text-on-surface/30 uppercase tracking-mono-sm">
-            Trinh Chau
-          </p>
+          <Image
+            src="/logo/Black.svg"
+            alt="Trinh Chau"
+            width={120}
+            height={36}
+            className="h-9 w-auto opacity-80 mx-auto"
+          />
         </footer>
       </main>
 

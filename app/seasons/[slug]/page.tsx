@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -8,6 +9,27 @@ import { getCollectionBySlug, getLooksByCollection } from '../../lib/supabase'
 
 interface SeasonPageProps {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: SeasonPageProps): Promise<Metadata> {
+  const { slug } = await params
+  const collection = await getCollectionBySlug(slug)
+  if (!collection) return {}
+  const title = `${collection.name} — Trinh Chau`
+  const description = collection.description
+    ? `${collection.description} — NTK Trinh Chau.`
+    : `${collection.name}: a seasonal collection by NTK Trinh Chau.`
+  return {
+    title: collection.name,
+    description,
+    alternates: { canonical: `https://trinhchau.com/seasons/${slug}` },
+    openGraph: {
+      title,
+      description,
+      url: `https://trinhchau.com/seasons/${slug}`,
+      ...(collection.cover_image ? { images: [{ url: collection.cover_image, alt: collection.name }] } : {}),
+    },
+  }
 }
 
 export default async function SeasonPage({ params }: SeasonPageProps) {

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 
@@ -26,8 +27,15 @@ export default function TopAppBar({ backHref, rightLabel, rightHref }: TopAppBar
               <ArrowLeft size={16} />
             </button>
           )}
-          <Link href="/" className="text-base font-medium text-on-surface no-underline" style={{ letterSpacing: '-0.26px' }}>
-            The Space
+          <Link href="/" className="no-underline flex items-center" aria-label="Trinh Chau — Home">
+            <Image
+              src="/logo/Black.svg"
+              alt="Trinh Chau"
+              width={80}
+              height={24}
+              className="h-6 w-auto"
+              priority
+            />
           </Link>
         </div>
 

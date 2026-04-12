@@ -16,24 +16,60 @@ const spaceMono = Space_Mono({
   display: 'swap',
 })
 
+const SITE_URL = 'https://trinhchau.com'
+
 export const metadata: Metadata = {
-  title: 'The Space — Trinh Chau',
-  description: 'A curated digital gallery showcasing the fashion design work of Trinh Chau.',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'Trinh Chau — The Space',
+    template: '%s | Trinh Chau',
+  },
+  description: 'NTK Trinh Chau — nhà thiết kế thời trang với các bộ sưu tập đặc sắc. A curated digital gallery showcasing the fashion design work of Trinh Chau.',
+  keywords: [
+    'Trinh Chau',
+    'NTK Trinh Chau',
+    'nhà thiết kế Trinh Chau',
+    'nhà thiết kế thời trang Trinh Chau',
+    'Trinh Chau designer',
+    'Trinh Chau fashion',
+    'thiết kế thời trang',
+    'thời trang Việt Nam',
+    'The Space',
+  ],
+  authors: [{ name: 'Trinh Chau', url: SITE_URL }],
+  creator: 'Trinh Chau',
+  publisher: 'The Space',
+  alternates: {
+    canonical: SITE_URL,
+  },
   openGraph: {
-    title: 'The Space — Trinh Chau',
-    description: 'Explore curated collections of hand-crafted fashion design.',
+    title: 'Trinh Chau — The Space',
+    description: 'NTK Trinh Chau — A curated digital gallery of fashion design collections.',
     type: 'website',
-    url: 'https://thespacepy.com',
+    url: SITE_URL,
+    siteName: 'The Space',
+    locale: 'vi_VN',
     images: [{
-      url: 'https://thespacepy.com/og-image.jpg',
+      url: '/og-image.jpg',
       width: 1200,
       height: 630,
+      alt: 'Trinh Chau — The Space',
     }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'The Space — Trinh Chau',
-    description: 'A curated digital gallery of fashion design.',
+    title: 'Trinh Chau — The Space',
+    description: 'NTK Trinh Chau — A curated digital gallery of fashion design.',
+    images: ['/og-image.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+    },
   },
 }
 
@@ -43,7 +79,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceMono.variable}`}>
+    <html lang="vi" className={`${inter.variable} ${spaceMono.variable}`}>
       <head>
         <meta name="theme-color" content="#ffffff" />
       </head>
