@@ -1,4 +1,11 @@
+import type { Metadata } from 'next'
 import { Suspense } from 'react'
+
+export const metadata: Metadata = {
+  title: 'The Archive',
+  description: 'The complete works of NTK Trinh Chau — all fashion pieces across every season. Search and explore the full archive of Trinh Chau designs.',
+  alternates: { canonical: 'https://trinhchau.com/works' },
+}
 import TopAppBar from '../components/UI/TopAppBar'
 import BottomNav from '../components/UI/BottomNav'
 import LookCard from '../components/UI/LookCard'

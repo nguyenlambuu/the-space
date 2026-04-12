@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import TopAppBar from '../../components/UI/TopAppBar'
@@ -8,6 +9,27 @@ import type { Look } from '../../lib/types'
 
 interface LookPageProps {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: LookPageProps): Promise<Metadata> {
+  const { id } = await params
+  const look = await getLook(id)
+  if (!look) return {}
+  const title = look.name
+  const description = look.inspiration
+    ? `${look.name} — ${look.inspiration} A piece by NTK Trinh Chau.`
+    : `${look.name} — a piece by NTK Trinh Chau, fashion designer.`
+  return {
+    title,
+    description,
+    alternates: { canonical: `https://trinhchau.com/works/${id}` },
+    openGraph: {
+      title: `${look.name} | Trinh Chau`,
+      description,
+      url: `https://trinhchau.com/works/${id}`,
+      ...(look.image_url ? { images: [{ url: look.image_url, alt: look.name }] } : {}),
+    },
+  }
 }
 
 export default async function LookPage({ params }: LookPageProps) {

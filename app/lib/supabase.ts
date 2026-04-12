@@ -157,6 +157,18 @@ export async function getAllLooks(
   }
 }
 
+export interface OwnerProfile {
+  display_name?: string
+  profile_photo_url?: string
+  social_instagram?: string
+  social_zalo?: string
+}
+
+// Fetch owner profile (placeholder — no DB table yet)
+export async function getOwnerProfile(): Promise<OwnerProfile | null> {
+  return null
+}
+
 // Fetch single look
 export async function getLook(lookId: string): Promise<Look | null> {
   const { data, error } = await supabase

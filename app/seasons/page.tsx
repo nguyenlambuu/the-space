@@ -1,4 +1,11 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'The Seasons',
+  description: 'Browse all seasonal collections by NTK Trinh Chau — fashion designer. Each season a testament to form, fabric, and Vietnamese craft tradition.',
+  alternates: { canonical: 'https://trinhchau.com/seasons' },
+}
 import Image from 'next/image'
 import TopAppBar from '../components/UI/TopAppBar'
 import BottomNav from '../components/UI/BottomNav'
