@@ -27,6 +27,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          UPSTREAM_REPO: ${{ vars.UPSTREAM_REPO || 'nguyenlambuu/the-space' }}
+          UPSTREAM_TOKEN: ${{ secrets.UPSTREAM_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_MODEL: ${{ inputs.model || vars.CLAUDE_MODEL || 'claude-sonnet-4-6' }}
         run: python3 scripts/coding_agent.py
