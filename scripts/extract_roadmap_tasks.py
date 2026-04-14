@@ -234,7 +234,7 @@ def main():
 
         for item_text in phase["items"]:
             tmpl = match_template(item_text)
-            title = tmpl["heading"]
+            title = f"[TaskAugen] {tmpl['heading']}"
 
             if title in existing:
                 print(f"  – Skipped (already open): {title}")
