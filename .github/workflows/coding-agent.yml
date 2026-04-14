@@ -2,6 +2,11 @@ name: TaskAugen Coding Agent
 
 on:
   workflow_dispatch:
+    inputs:
+      model:
+        description: 'Claude model ID to use for code generation'
+        required: false
+        default: 'claude-sonnet-4-6'
   schedule:
     - cron: '0 10 * * 1'  # Every Monday at 10am UTC
 
@@ -23,4 +28,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_MODEL: ${{ inputs.model || vars.CLAUDE_MODEL || 'claude-sonnet-4-6' }}
         run: python3 scripts/coding_agent.py

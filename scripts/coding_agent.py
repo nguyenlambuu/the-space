@@ -22,7 +22,7 @@ import urllib.error
 from pathlib import Path
 
 LABEL = "roadmap"
-CLAUDE_MODEL = "claude-sonnet-4-6"   # Sonnet for code generation
+CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-6")
 MAX_FILE_CHARS = 4000
 ISSUE_PREFIX = "[TaskAugen]"
 PRIORITY_ORDER = {"priority: high": 0, "priority: medium": 1, "priority: low": 2}
