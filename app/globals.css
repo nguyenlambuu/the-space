@@ -53,3 +53,114 @@ img {
   outline: 2px dashed #000000;
   outline-offset: 2px;
 }
+
+/* Form inputs — warm neutral palette, border-radius: 0 */
+input[type="email"],
+input[type="text"],
+input[type="search"],
+textarea {
+  border-radius: 0;
+  background-color: #faf9f6;
+  color: #0d0f0d;
+  border: 1px solid #6a5e45;
+  padding: 0.625rem 0.875rem;
+  font-family: var(--font-inter), SF Pro Display, system-ui, helvetica, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 300;
+  letter-spacing: -0.14px;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+input[type="email"]:focus,
+input[type="text"]:focus,
+input[type="search"]:focus,
+textarea:focus {
+  outline: 2px dashed #0d0f0d;
+  outline-offset: 2px;
+  border-color: #0d0f0d;
+  background-color: #ffffff;
+}
+
+input[type="email"]::placeholder,
+input[type="text"]::placeholder,
+input[type="search"]::placeholder,
+textarea::placeholder {
+  color: #6a5e45;
+  opacity: 0.6;
+}
+
+input[type="email"]:disabled,
+input[type="text"]:disabled,
+input[type="search"]:disabled,
+textarea:disabled {
+  background-color: #f0ede6;
+  color: #6a5e45;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Buttons — warm neutral palette, border-radius: 0 */
+button,
+input[type="submit"],
+input[type="button"] {
+  border-radius: 0;
+  font-family: var(--font-inter), SF Pro Display, system-ui, helvetica, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+button:disabled,
+input[type="submit"]:disabled,
+input[type="button"]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Primary button variant */
+.btn-primary {
+  background-color: #0d0f0d;
+  color: #faf9f6;
+  border: 1px solid #0d0f0d;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0;
+}
+
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+/* Secondary button variant */
+.btn-secondary {
+  background-color: transparent;
+  color: #0d0f0d;
+  border: 1px solid #0d0f0d;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #0d0f0d;
+  color: #faf9f6;
+}
+
+/* Warm accent button variant */
+.btn-accent {
+  background-color: #6a5e45;
+  color: #faf9f6;
+  border: 1px solid #6a5e45;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0;
+}
+
+.btn-accent:hover:not(:disabled) {
+  opacity: 0.85;
+}
