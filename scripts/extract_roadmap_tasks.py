@@ -262,8 +262,9 @@ def ensure_milestone(repo: str, token: str, title: str, description: str = "") -
     return result["number"]
 
 
-def get_existing_issue_titles(repo: str, token: str) -> set[str]:
-    titles, page = set(), 1
+def get_existing_issues(repo: str, token: str) -> dict[str, dict]:
+    """Return {title: issue} for all open roadmap-labelled issues."""
+    issues_map, page = {}, 1
     while True:
         issues = gh_request("GET",
             f"/repos/{repo}/issues?state=open&labels={LABEL}&per_page=100&page={page}",
@@ -271,11 +272,17 @@ def get_existing_issue_titles(repo: str, token: str) -> set[str]:
         if not issues:
             break
         for issue in issues:
-            titles.add(issue["title"])
+            issues_map[issue["title"]] = issue
         if len(issues) < 100:
             break
         page += 1
-    return titles
+    return issues_map
+
+
+def backfill_milestone(repo: str, token: str, issue_number: int, milestone_number: int):
+    """Assign milestone to an existing issue that doesn't have one."""
+    gh_request("PATCH", f"/repos/{repo}/issues/{issue_number}", token,
+               {"milestone": milestone_number})
 
 
 def create_issue(repo: str, token: str, title: str, body: str,
@@ -330,8 +337,8 @@ def main():
     for name, (color, desc) in PRIORITY_LABELS.items():
         ensure_label(repo, token, name, color, desc)
 
-    existing = get_existing_issue_titles(repo, token)
-    created = skipped = 0
+    existing = get_existing_issues(repo, token)
+    created = skipped = backfilled = 0
 
     for phase in phases:
         phase_label = re.sub(r"[^a-z0-9]+", "-", phase["heading"].lower()).strip("-")
@@ -344,7 +351,13 @@ def main():
             title = f"{ISSUE_PREFIX} {item_text}"
 
             if title in existing:
-                print(f"  – Skipped (already open): {title}")
+                issue = existing[title]
+                if not issue.get("milestone"):
+                    backfill_milestone(repo, token, issue["number"], milestone_number)
+                    print(f"  ↑ Backfilled milestone: {title}")
+                    backfilled += 1
+                else:
+                    print(f"  – Skipped (already open): {title}")
                 skipped += 1
                 continue
 
@@ -382,7 +395,8 @@ def main():
             existing.add(title)
             created += 1
 
-    print(f"\nDone — {created} issue(s) created, {skipped} skipped (already open).")
+    print(f"\nDone — {created} created, {backfilled} backfilled with milestone, "
+          f"{skipped - backfilled} already up-to-date.")
 
 
 if __name__ == "__main__":
