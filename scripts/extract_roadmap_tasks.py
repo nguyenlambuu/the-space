@@ -279,10 +279,20 @@ def get_existing_issues(repo: str, token: str) -> dict[str, dict]:
     return issues_map
 
 
-def backfill_milestone(repo: str, token: str, issue_number: int, milestone_number: int):
-    """Assign milestone to an existing issue that doesn't have one."""
-    gh_request("PATCH", f"/repos/{repo}/issues/{issue_number}", token,
-               {"milestone": milestone_number})
+def backfill_issue(repo: str, token: str, issue: dict, milestone_number: int):
+    """Assign milestone and priority label to an existing issue if missing."""
+    patch: dict = {}
+
+    if not issue.get("milestone"):
+        patch["milestone"] = milestone_number
+
+    existing_label_names = {lb["name"] for lb in issue.get("labels", [])}
+    has_priority = any(n.startswith("priority:") for n in existing_label_names)
+    if not has_priority:
+        patch["labels"] = list(existing_label_names | {"priority: medium"})
+
+    if patch:
+        gh_request("PATCH", f"/repos/{repo}/issues/{issue['number']}", token, patch)
 
 
 def create_issue(repo: str, token: str, title: str, body: str,
@@ -352,12 +362,17 @@ def main():
 
             if title in existing:
                 issue = existing[title]
-                if not issue.get("milestone"):
-                    backfill_milestone(repo, token, issue["number"], milestone_number)
-                    print(f"  ↑ Backfilled milestone: {title}")
+                existing_label_names = {lb["name"] for lb in issue.get("labels", [])}
+                needs_backfill = (
+                    not issue.get("milestone") or
+                    not any(n.startswith("priority:") for n in existing_label_names)
+                )
+                if needs_backfill:
+                    backfill_issue(repo, token, issue, milestone_number)
+                    print(f"  ↑ Backfilled: {title}")
                     backfilled += 1
                 else:
-                    print(f"  – Skipped (already open): {title}")
+                    print(f"  – Skipped (already up-to-date): {title}")
                 skipped += 1
                 continue
 
